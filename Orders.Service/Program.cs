@@ -1,17 +1,17 @@
 ﻿using System.Threading.Tasks;
 using MassTransit;
 using MassTransit.Definition;
-using MassTransit.RabbitMqTransport;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Product.Service.Consumers;
+using Order.Contracts;
+using Orders.Service.Courier;
 using Serilog;
 using Serilog.Events;
 
-namespace Product.Service
+namespace Orders.Service
 {
 	internal class Program
 	{
@@ -25,16 +25,25 @@ namespace Product.Service
 				.CreateLogger();
 
 			var builder = new HostBuilder()
-				.ConfigureAppConfiguration((hostingContext, config) => { config.AddJsonFile("appsettings.json", true); })
+				.ConfigureAppConfiguration((hostingContext, config) =>
+				{
+					config.AddJsonFile("appsettings.json", true);
+					config.AddEnvironmentVariables();
+
+					if (args != null)
+						config.AddCommandLine(args);
+				})
 				.ConfigureServices((hostContext, services) =>
 				{
 					services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
 					services.AddMassTransit(cfg =>
 					{
-						cfg.AddConsumersFromNamespaceContaining<AllocateProductConsumer>();
+						cfg.AddConsumersFromNamespaceContaining<FulfillOrderConsumer>();
+						cfg.AddActivitiesFromNamespaceContaining<AllocateProductActivity>();
+
 						cfg.UsingRabbitMq((context, configurator) =>
 						{
-							var rabbitMqConfig = hostContext.Configuration.GetSection($"RabbitMq");
+							var rabbitMqConfig = hostContext.Configuration.GetSection("RabbitMq");
 							configurator.Host(rabbitMqConfig["HostAddress"], hostConfigurator =>
 							{
 								hostConfigurator.Username(rabbitMqConfig["Username"]);
@@ -42,10 +51,10 @@ namespace Product.Service
 							});
 							configurator.ConfigureEndpoints(context);
 						});
+						cfg.AddRequestClient<AllocateProductsCommand>();
 					});
 
 					services.AddHostedService<MassTransitHostedService>();
-					services.AddScoped<ProductService>();
 				})
 				.ConfigureLogging((hostingContext, logging) =>
 				{
@@ -54,6 +63,8 @@ namespace Product.Service
 				});
 
 			await builder.RunConsoleAsync();
+
+			Log.CloseAndFlush();
 		}
 	}
 }

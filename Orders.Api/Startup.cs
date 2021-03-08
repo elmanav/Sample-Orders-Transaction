@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MassTransit;
+using MassTransit.Definition;
 
 namespace Orders.Api
 {
@@ -28,10 +30,23 @@ namespace Orders.Api
 		{
 
 			services.AddControllers();
-			services.AddSwaggerGen(c =>
+			services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "Orders api", Version = "v1"}); });
+			services.AddMassTransit(mt =>
 			{
-				c.SwaggerDoc("v1", new OpenApiInfo { Title = "Orders api", Version = "v1" });
+				mt.UsingRabbitMq((context, cfg) =>
+				{
+					cfg.Host("localhost", configurator =>
+					{
+						configurator.Username("guest");
+						configurator.Password("guest");
+					});
+				});
+
+				//mt.AddRequestClient<SubmitOrder>(new Uri($"queue:{KebabCaseEndpointNameFormatter.Instance.Consumer<SubmitOrderConsumer>()}"));
+
+				//mt.AddRequestClient<CheckOrder>();
 			});
+			services.AddMassTransitHostedService();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

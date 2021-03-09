@@ -18,6 +18,11 @@ namespace Orders.Service
 				ItemNumber = "ITEM123",
 				Quantity = 10
 			});
+			builder.AddActivity("Payment", new Uri("queue:payment_execute"), new
+			{
+				context.Message.Customer,
+				context.Message.CardNumber
+			});
 
 			//builder.AddVariable("OrderId", context.Message.OrderId);
 

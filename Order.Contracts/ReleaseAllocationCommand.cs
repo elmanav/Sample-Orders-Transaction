@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Order.Contracts
+namespace Product.Contracts
 {
 	public interface ReleaseAllocationCommand
 	{

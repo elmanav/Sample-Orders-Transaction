@@ -9,17 +9,19 @@ namespace Orders.Service.Courier
 {
 	public class AllocateProductActivity : IActivity<AllocateProductArguments, AllocateProductLog>
 	{
-		private readonly IRequestClient<AllocateProductsCommand> _client;
+		private readonly IRequestClient<AllocateProductsCommand> _clientAllocate;
+		private readonly IRequestClient<ReleaseAllocationCommand> _clientRelease;
 
-		public AllocateProductActivity(IRequestClient<AllocateProductsCommand> client)
+		public AllocateProductActivity(IRequestClient<AllocateProductsCommand> clientAllocate, IRequestClient<ReleaseAllocationCommand> clientRelease)
 		{
-			_client = client;
+			_clientAllocate = clientAllocate;
+			_clientRelease = clientRelease;
 		}
 
 		/// <inheritdoc />
 		public async Task<ExecutionResult> Execute(ExecuteContext<AllocateProductArguments> context)
 		{
-			var response = await _client.GetResponse<ProductsAllocated>(new
+			var response = await _clientAllocate.GetResponse<ProductsAllocated>(new
 			{
 				ItemNumber = context.Arguments.ItemNumber,
 				ItemCount = context.Arguments.Quantity
@@ -31,9 +33,13 @@ namespace Orders.Service.Courier
 		}
 
 		/// <inheritdoc />
-		public Task<CompensationResult> Compensate(CompensateContext<AllocateProductLog> context)
+		public async Task<CompensationResult> Compensate(CompensateContext<AllocateProductLog> context)
 		{
-			throw new NotImplementedException();
+			await _clientRelease.GetResponse<AllocationReleased>(new
+			{
+				context.Log.AllocationId
+			});
+			return context.Compensated();
 		}
 	}
 

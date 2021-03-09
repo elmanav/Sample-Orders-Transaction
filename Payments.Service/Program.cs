@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using MassTransit;
 using MassTransit.Definition;
 using Microsoft.Extensions.Configuration;
@@ -6,18 +7,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Order.Contracts;
-using Orders.Service.Courier;
-using Payments.Contracts;
-using Product.Contracts;
+using Payments.Service.Consumers;
 using Serilog;
 using Serilog.Events;
 
-namespace Orders.Service
+namespace Payments.Service
 {
-	internal class Program
+	class Program
 	{
-		private static async Task Main(string[] args)
+		static async Task Main(string[] args)
 		{
 			Log.Logger = new LoggerConfiguration()
 				.MinimumLevel.Debug()
@@ -27,25 +25,16 @@ namespace Orders.Service
 				.CreateLogger();
 
 			var builder = new HostBuilder()
-				.ConfigureAppConfiguration((hostingContext, config) =>
-				{
-					config.AddJsonFile("appsettings.json", true);
-					config.AddEnvironmentVariables();
-
-					if (args != null)
-						config.AddCommandLine(args);
-				})
+				.ConfigureAppConfiguration((hostingContext, config) => { config.AddJsonFile("appsettings.json", true); })
 				.ConfigureServices((hostContext, services) =>
 				{
 					services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
 					services.AddMassTransit(cfg =>
 					{
-						cfg.AddConsumersFromNamespaceContaining<FulfillOrderConsumer>();
-						cfg.AddActivitiesFromNamespaceContaining<AllocateProductActivity>();
-
+						cfg.AddConsumersFromNamespaceContaining<PayOrderConsumer>();
 						cfg.UsingRabbitMq((context, configurator) =>
 						{
-							var rabbitMqConfig = hostContext.Configuration.GetSection("RabbitMq");
+							var rabbitMqConfig = hostContext.Configuration.GetSection($"RabbitMq");
 							configurator.Host(rabbitMqConfig["HostAddress"], hostConfigurator =>
 							{
 								hostConfigurator.Username(rabbitMqConfig["Username"]);
@@ -53,10 +42,6 @@ namespace Orders.Service
 							});
 							configurator.ConfigureEndpoints(context);
 						});
-						cfg.AddRequestClient<AllocateProductsCommand>();
-						cfg.AddRequestClient<PayOrder>();
-						cfg.AddRequestClient<ReleaseAllocationCommand>();
-
 					});
 
 					services.AddHostedService<MassTransitHostedService>();
@@ -68,8 +53,6 @@ namespace Orders.Service
 				});
 
 			await builder.RunConsoleAsync();
-
-			Log.CloseAndFlush();
 		}
 	}
 }

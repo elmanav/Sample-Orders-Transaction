@@ -5,15 +5,21 @@ VisualStudioVersion = 16.0.31025.194
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orders.Api", "Orders.Api\Orders.Api.csproj", "{C74CDD8F-4875-41A0-8CC8-75FE92BDB7C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Product.Service", "Product.Service\Product.Service.csproj", "{40FDA94D-356D-45F1-BBF1-7ACE3DD9183B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Product.Service", "Product.Service\Product.Service.csproj", "{40FDA94D-356D-45F1-BBF1-7ACE3DD9183B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Products", "Products", "{F5A524ED-B506-4ED0-BF65-6F053868FA8E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Product.Contracts", "Order.Contracts\Product.Contracts.csproj", "{FCE46902-1324-4B0A-84D2-8C5BA868C373}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Product.Contracts", "Order.Contracts\Product.Contracts.csproj", "{FCE46902-1324-4B0A-84D2-8C5BA868C373}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orders.Service", "Orders.Service\Orders.Service.csproj", "{0E44093A-EC50-441C-8C87-C79224CD9965}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orders.Service", "Orders.Service\Orders.Service.csproj", "{0E44093A-EC50-441C-8C87-C79224CD9965}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orders.Contracts", "Orders.Contracts\Orders.Contracts.csproj", "{B4783811-FB6F-40E6-9EDA-C3BDA7A17707}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orders.Contracts", "Orders.Contracts\Orders.Contracts.csproj", "{B4783811-FB6F-40E6-9EDA-C3BDA7A17707}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Payments", "Payments", "{48BDC284-EA47-40FF-B454-D5347F350A5A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Payments.Service", "Payments.Service\Payments.Service.csproj", "{718C4DDB-7D67-45AE-8F7F-7AF43A1C9798}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Payments.Contracts", "Payments.Contracts\Payments.Contracts.csproj", "{6FA18ECD-3B8A-413F-8819-9CF49AF3F4B7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +47,14 @@ Global
 		{B4783811-FB6F-40E6-9EDA-C3BDA7A17707}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4783811-FB6F-40E6-9EDA-C3BDA7A17707}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4783811-FB6F-40E6-9EDA-C3BDA7A17707}.Release|Any CPU.Build.0 = Release|Any CPU
+		{718C4DDB-7D67-45AE-8F7F-7AF43A1C9798}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{718C4DDB-7D67-45AE-8F7F-7AF43A1C9798}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{718C4DDB-7D67-45AE-8F7F-7AF43A1C9798}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{718C4DDB-7D67-45AE-8F7F-7AF43A1C9798}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FA18ECD-3B8A-413F-8819-9CF49AF3F4B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FA18ECD-3B8A-413F-8819-9CF49AF3F4B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FA18ECD-3B8A-413F-8819-9CF49AF3F4B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FA18ECD-3B8A-413F-8819-9CF49AF3F4B7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -48,6 +62,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{40FDA94D-356D-45F1-BBF1-7ACE3DD9183B} = {F5A524ED-B506-4ED0-BF65-6F053868FA8E}
 		{FCE46902-1324-4B0A-84D2-8C5BA868C373} = {F5A524ED-B506-4ED0-BF65-6F053868FA8E}
+		{718C4DDB-7D67-45AE-8F7F-7AF43A1C9798} = {48BDC284-EA47-40FF-B454-D5347F350A5A}
+		{6FA18ECD-3B8A-413F-8819-9CF49AF3F4B7} = {48BDC284-EA47-40FF-B454-D5347F350A5A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6EB731C4-3A12-428B-9A89-34A7AD6B572A}

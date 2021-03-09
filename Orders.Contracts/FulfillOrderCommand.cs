@@ -8,5 +8,8 @@ namespace Orders.Contracts
 	public interface FulfillOrderCommand
 	{
 		Guid OrderId { get; }
+		string Customer { get; }
+
+		string CardNumber { get; }
 	}
 }

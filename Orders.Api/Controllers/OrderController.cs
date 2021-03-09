@@ -18,13 +18,15 @@ namespace Orders.Api.Controllers
 		}
 
 		[HttpPost("FulfillOrder")]
-		public async Task FulfillOrder(Guid orderId)
+		public async Task FulfillOrder(Guid orderId, string customer, string cardNumber)
 		{
 			var sendEndpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri("queue:fulfill-order"));
 			await sendEndpoint.Send<FulfillOrderCommand>(new
 			{
-				OrderId = orderId
+				OrderId = orderId,
+				Customer = customer,
+				CardNumber = cardNumber
 			});
 		}
-    }
+	}
 }

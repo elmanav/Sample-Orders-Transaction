@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Order.Contracts;
 using Orders.Service.Courier;
+using Orders.Service.StateMachine;
 using Payments.Contracts;
 using Product.Contracts;
 using Serilog;
@@ -56,6 +57,9 @@ namespace Orders.Service
 						cfg.AddRequestClient<AllocateProductsCommand>();
 						cfg.AddRequestClient<PayOrder>();
 						cfg.AddRequestClient<ReleaseAllocationCommand>();
+
+						cfg.AddSagaStateMachine<OrderStateMachine, OrderState>()
+							.InMemoryRepository();
 
 					});
 

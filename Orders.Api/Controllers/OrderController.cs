@@ -11,14 +11,38 @@ namespace Orders.Api.Controllers
 	public class OrderController : ControllerBase
 	{
 		private readonly ISendEndpointProvider _sendEndpointProvider;
+		private readonly IRequestClient<SubmitOrderCommand> _clientSubmitOrder;
 
-		public OrderController(ISendEndpointProvider sendEndpointProvider)
+		public OrderController(ISendEndpointProvider sendEndpointProvider, IRequestClient<SubmitOrderCommand> clientSubmitOrder)
 		{
 			_sendEndpointProvider = sendEndpointProvider;
+			_clientSubmitOrder = clientSubmitOrder;
+		}
+
+		[HttpPost("SubmitOrder")]
+		public async Task<IActionResult> SubmitOrder(Guid orderId)
+		{
+			var response = await _clientSubmitOrder.GetResponse<SubmitOrderSuccessResponse>(new
+			{
+				OrderId = orderId
+			});
+			return Accepted(response);
+		}
+
+		[HttpPost("AcceptOrder")]
+		public async Task<IActionResult> AcceptOrder(Guid orderId, string cardNumber)
+		{
+			var sendEndpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri("queue:accept-order"));
+			await sendEndpoint.Send<AcceptOrderCommand>(new
+			{
+				OrderId = orderId,
+				CardNumber = cardNumber
+			});
+			return Accepted();
 		}
 
 		[HttpPost("FulfillOrder")]
-		public async Task FulfillOrder(Guid orderId, string customer, string cardNumber)
+		public async Task<IActionResult> FulfillOrder(Guid orderId, string customer, string cardNumber)
 		{
 			var sendEndpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri("queue:fulfill-order"));
 			await sendEndpoint.Send<FulfillOrderCommand>(new
@@ -27,6 +51,7 @@ namespace Orders.Api.Controllers
 				Customer = customer,
 				CardNumber = cardNumber
 			});
+			return Accepted();
 		}
 	}
 }

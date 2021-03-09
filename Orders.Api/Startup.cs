@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MassTransit;
 using MassTransit.Definition;
+using Orders.Contracts;
 
 namespace Orders.Api
 {
@@ -42,7 +43,7 @@ namespace Orders.Api
 					});
 				});
 
-				//mt.AddRequestClient<SubmitOrder>(new Uri($"queue:{KebabCaseEndpointNameFormatter.Instance.Consumer<SubmitOrderConsumer>()}"));
+				mt.AddRequestClient<SubmitOrderCommand>();
 
 				//mt.AddRequestClient<CheckOrder>();
 			});
